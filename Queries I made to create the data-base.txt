@@ -1,0 +1,150 @@
+CREATE TABLE companies (
+  id SERIAL PRIMARY KEY, 
+  name VARCHAR,
+  location VARCHAR,
+  founded DATE,
+  contact VARCHAR, -- Changed to VARCHAR
+  number_of_employees INTEGER,
+  founder_ceo VARCHAR
+);
+
+CREATE TABLE investments (
+  id SERIAL PRIMARY KEY, 
+  name VARCHAR, 
+  company_id INTEGER REFERENCES companies(id),
+  risk_level VARCHAR(10),
+  investment_type VARCHAR, -- Changed to VARCHAR
+  amount MONEY,
+  date DATE
+);
+
+
+
+CREATE TABLE performance (
+  id SERIAL PRIMARY KEY,
+  investment_id INTEGER REFERENCES investments(id),
+  target_company_name VARCHAR,
+  rationale TEXT,
+  market_position TEXT,
+  stock_benefit TEXT,
+  future_developments TEXT,
+  significant_events TEXT
+);
+
+
+CREATE TYPE investment_status AS ENUM ('Ongoing', 'Completed', 'Cancelled', 'Pending');to do 
+COMMENT ON TABLE performance IS 'Table to track the performance of each investment over time';
+
+
+
+INSERT INTO companies (name, location, founded, contact, number_of_employees, founder_ceo)
+VALUES
+  ('Apple Inc.', 'Cupertino, California', '1976-04-01', 'apple@example.com', 164000, 'Steve Jobs'),
+  ('Microsoft Corporation', 'Redmond, Washington', '1975-04-04', 'microsoft@example.com', 221000, 'Bill Gates'),
+  ('Amazon.com Inc.', 'Seattle, Washington', '1994-07-05', 'amazon@example.com', 1461000, 'Jeff Bezos'),
+  ('Alphabet Inc.', 'Mountain View, California', '1998-09-04', 'alphabet@example.com', 174014, 'Larry Page'),
+  ('Meta Platforms Inc.', 'Menlo Park, California', '2004-02-04', 'meta@example.com', 71469, 'Mark Zuckerberg');
+
+ALTER TABLE investments 
+ALTER COLUMN amount TYPE DECIMAL;
+INSERT INTO investments (name, company_id, risk_level, investment_type, amount, date)
+VALUES 
+  ('Didi Chuxing Investment', 1, 'Medium', 'Tech/Transportation', '1000000000.00', '2016-05-13'), 
+	('Beats Electronics Acquisition', 1, 'Low', 'Tech/Consumer', '3000000000.00', '2014-05-28'),
+  ('LinkedIn Acquisition', 2, 'Low', 'Tech/Internet', '26200000000.00', '2016-06-13'),  
+  ('GitHub Acquisition', 2, 'Low', 'Tech/Internet', '7500000000.00', '2018-06-04'), 
+  ('Whole Foods Acquisition', 3, 'Low', 'Retail/Food', '13700000000.00', '2017-06-16'),
+  ('Zappos Acquisition', 3, 'Low', 'E-commerce/Fashion', '1200000000.00', '2009-07-22'),
+  ('YouTube Acquisition', 4, 'Low', 'Tech/Media', '1650000000.00', '2006-11-13'),
+  ('Nest Acquisition', 4, 'Low', 'Tech/Smart Home', '3200000000.00', '2014-01-13'),
+  ('WhatsApp Acquisition', 5, 'Low', 'Tech/Messaging', '19000000000.00', '2014-02-19'),
+  ('Instagram Acquisition', 5, 'Low', 'Tech/Social Media', '1000000000.00', '2012-04-09');
+
+
+INSERT INTO performance 
+(investment_id, target_company_name, rationale, market_position, stock_benefit, future_developments, significant_events)
+VALUES 
+(1, 'Didi Chuxing', 
+'Insight into Chinese market & transportation', 
+'Dominant player in China''s ride-sharing market.', 
+'Gained strategic insight, but faced regulatory challenges in China.', 
+'Didi faces challenges with regulations.', 
+'Didi faced significant regulatory scrutiny in 2021.'),
+
+(2, 'Beats Electronics', 
+'Boost Apple''s audio product lineup.', 
+'Successful brand integration, lead in high-end headphones.', 
+'Increased Apple''s footprint in the audio sector.', 
+'Beats integrated into Apple''s lineup.', 
+'Launch of various iterations of Beats headphones.'),
+
+(3, 'LinkedIn', 
+'Integrate professional networking with enterprise services.', 
+'Maintained leadership in professional networking.', 
+'Successful integration with Microsoft services.', 
+'Integration with Microsoft Teams and other MS services.', 
+'Growth in LinkedIn Learning and other premium services.'),
+
+(4, 'GitHub', 
+'Strengthen developer tools and services.', 
+'Essential platform for developers.', 
+'Strengthened Microsoft''s position among developers.', 
+'Integration with Microsoft Azure.', 
+'Launch of GitHub Actions and enhanced security features.'),
+
+(5, 'Whole Foods', 
+'Entry into brick-and-mortar retail.', 
+'Expanded physical footprint in US.', 
+'Integrated Amazon Prime benefits.', 
+'Introduction of Amazon Go tech in some stores.', 
+'Whole Foods prices lowered on certain items, expansion of delivery services.'),
+
+(6, 'Zappos', 
+'Expand in apparel and footwear.', 
+'Maintained strong brand identity.', 
+'Supported Amazon''s growth in clothing and footwear.', 
+'Maintained largely independent operation.', 
+'Continued focus on customer service and company culture.'),
+
+(7, 'YouTube', 
+'Dominate online video.', 
+'Number one platform for video content.', 
+'Ad revenues and premium subscriptions increased.', 
+'Expansion of YouTube services like YouTube TV.', 
+'Regulatory challenges, content controversies.'),
+
+(8, 'Nest', 
+'Entry into smart home market.', 
+'Lead in smart thermostats.', 
+'Supported Google''s position in smart homes.', 
+'Integration with Google Home.', 
+'Rebranding and launch of various new products.'),
+
+(9, 'WhatsApp', 
+'Capture global messaging market.', 
+'Most popular global messaging app.', 
+'Expansion into business services.', 
+'End-to-end encryption and introduction of various features.', 
+'Debates over data privacy and encryption.'),
+
+(10, 'Instagram', 
+'Capture photo-sharing audience.', 
+'Fast growth in users and ad revenue.', 
+'Increased ad revenue and user engagement.', 
+'Launch of various features like Stories, IGTV.', 
+'Competing with platforms like TikTok, handling user privacy concerns.');
+
+
+
+// -- Query I made so I can check the funcionality  of my database ^_^;
+
+SELECT c.name, 
+	 i.name,
+       i.risk_level,
+       i.investment_type,
+       p.significant_events
+FROM companies AS c
+INNER JOIN investments AS i ON c.id = i.company_id
+INNER JOIN performance AS p  ON i.id = p.investment_id;
+	
+
